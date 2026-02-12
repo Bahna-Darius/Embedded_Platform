@@ -77,6 +77,14 @@ brain::CBatterymanager g_batteryManager(dummy_value);
 
 /* USER NEW COMPONENT BEGIN */
 
+periodics::CUltrasonic g_ultrasonic(
+    g_baseTick * 10,   // fast periodic, but non-blocking
+    g_rpi,
+    g_robotstatemachine,
+    D5, D6,            // Front TRIG/ECHO
+    D7, D8             // Rear TRIG/ECHO
+);
+
 /* USER NEW COMPONENT END */
 
 // Map for redirecting messages with the key and the callback functions. If the message key equals to one of the enumerated keys, than it will be applied the paired callback function.
@@ -94,6 +102,9 @@ drivers::CSerialMonitor::CSerialSubscriberMap g_serialMonitorSubscribers = {
     {"kl",             mbed::callback(&g_klmanager,         &brain::CKlmanager::serialCallbackKLCommand)},
     {"batteryCapacity",mbed::callback(&g_batteryManager,    &brain::CBatterymanager::serialCallbackBATTERYCommand)},
     {"resourceMonitor",mbed::callback(&g_resourceMonitor,   &periodics::CResourcemonitor::serialCallbackRESMONCommand)},
+    {"usFovr",         mbed::callback(&g_ultrasonic, &periodics::CUltrasonic::serialCallbackUSFrontOverride)},
+    {"park",           mbed::callback(&g_ultrasonic, &periodics::CUltrasonic::serialCallbackPARKcommand)},
+
 };
 
 // Create the serial monitor object, which decodes, redirects the messages and transmits the responses.
@@ -111,7 +122,7 @@ utils::CTask* g_taskList[] = {
     &g_resourceMonitor,
     &g_alerts,
     // USER NEW PERIODICS BEGIN
-    
+    &g_ultrasonic,
     // USER NEW PERIODICS END
 }; 
 

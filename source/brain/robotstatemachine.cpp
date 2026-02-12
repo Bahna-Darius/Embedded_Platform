@@ -78,6 +78,21 @@ namespace brain{
      */
     void CRobotStateMachine::_run()
     {   
+        // --- SAFETY STOP OVERRIDE (front ultrasonic) ---
+        if (m_safetyStop) {
+            m_steeringControl.setAngle(m_safetySteer);
+            m_speedingControl.setBrake();
+
+            // Send brake event ONCE (Brain already knows how to handle "@brake")
+            if (!m_safetyStopLatched) {
+                m_serialPort.write("@brake:1;;\r\n", 12);
+                m_safetyStopLatched = true;
+            }
+            return;
+        } else {
+            m_safetyStopLatched = false;
+        }
+
         char buffer[100];
         switch(m_state)
         {
@@ -143,6 +158,10 @@ namespace brain{
      */
     void CRobotStateMachine::serialCallbackSPEEDcommand(char const * a, char * b)
     {
+        if (m_safetyStop) {
+            sprintf(b, "0");
+            return;
+        }
         int l_speed;
         uint32_t l_res = sscanf(a,"%d",&l_speed);
         if (1 == l_res)
@@ -183,6 +202,11 @@ namespace brain{
      */
     void CRobotStateMachine::serialCallbackSTEERcommand(char const * a, char * b)
     {
+        if (m_safetyStop) {
+            sprintf(b, "0");
+            return;
+        }
+
         int l_angle;
         uint32_t l_res = sscanf(a,"%d",&l_angle);
         if (1 == l_res)
@@ -254,6 +278,10 @@ namespace brain{
      */
     void CRobotStateMachine::serialCallbackVCDcommand(char const * message, char * response)
     {
+        if (m_safetyStop) {
+            sprintf(response, "safetyStop");
+            return;
+        }
         int speed, steer;
         uint8_t time_deciseconds;
 
@@ -345,5 +373,12 @@ namespace brain{
 
         sprintf(response,"1");
     }
+    /* Safety stop from HC-SR04 */
+    void CRobotStateMachine::setSafetyStop(bool enable, int steer_angle)
+    {
+        m_safetyStop = enable;
+        m_safetySteer = steer_angle;
+    }
+
 
 }; // namespace brain

@@ -78,6 +78,10 @@ namespace brain
             void serialCallbackSteerLimitscommand(char const * message, char * response);
             /* Serial callback method for alive */
             void serialCallbackAlivecommand(char const * message, char * response);
+            /* Safety stop from HC-SR04 */
+            void setSafetyStop(bool enable, int steer_angle = 0);
+            bool safetyStopActive() const { return m_safetyStop; };
+
 
         private:
             /* Contains the state machine, which control the lower level drivers (motor and steering) based the current state. */
@@ -101,6 +105,12 @@ namespace brain
             int m_steering;
 
             bool m_calibON;
+
+            /* Safety stop from HC-SR04 */
+            bool m_safetyStop {false};
+            bool m_safetyStopLatched {false};
+            int  m_safetySteer {0};
+
         
     }; // class CRobotStateMachine
 }; // namespace brain

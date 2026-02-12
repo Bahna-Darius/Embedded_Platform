@@ -60,3 +60,5 @@
 #include <utils/taskmanager.hpp>
 /* Header file for the task manager library, which  applies periodically the fun function of it's children*/
 #include <utils/task.hpp>
+/* Header file for HC-SR04 sensor */
+#include <periodics/ultrasonic.hpp>
