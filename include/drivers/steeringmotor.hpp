@@ -85,7 +85,7 @@ namespace drivers
             /** @brief PWM output pin */
             PwmOut m_pwm_pin;
             /** @brief 0 default */
-            int zero_default = 1500; //0.075(7.5% duty cycle) * 20000µs(ms_period)
+            int zero_default = 1620; //0.075(7.5% duty cycle) * 20000µs(ms_period)
             /** @brief ms_period */
             int8_t ms_period = 20; // 20000µs
             
@@ -104,13 +104,8 @@ namespace drivers
             const int steeringValueP[3] = {0, 150, 200};
             const int steeringValueN[3] = {0, -150, -200};
 
-            const int pwmValuesP[3] = {
-                1500, 1801, 1914
-            };
-
-            const int pwmValuesN[3] = {
-                1500, 1285, 1154
-            };
+            const int pwmValuesP[3] = { 1620, 1921, 2034 };
+            const int pwmValuesN[3] = { 1620, 1405, 1274 };
 
     }; // class ISteeringCommand
 }; // namespace drivers

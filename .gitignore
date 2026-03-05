@@ -3,3 +3,6 @@ cmake_build/*
 !cmake_build/NUCLEO_F401RE/develop/GCC_ARM/robot_car.bin
 mbed-os/
 .vscode
+# Ignore build artifacts
+cmake_build/
+
